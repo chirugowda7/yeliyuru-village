@@ -19,17 +19,12 @@
 
   // Hydrate custom village data saved from Admin Panel if present in localStorage
   try {
-    localStorage.removeItem('yeliyuru_custom_village_data');
-    const customDataRaw = localStorage.getItem('yeliyuru_custom_village_data_v2');
+    const customDataRaw = localStorage.getItem('yeliyuru_custom_village_data');
     if (customDataRaw) {
       const parsedData = JSON.parse(customDataRaw);
-      const defaultTime = Number((VILLAGE_DATA && VILLAGE_DATA.lastUpdated) || 0);
-      const cachedTime = Number((parsedData && parsedData.lastUpdated) || 0);
-      if (parsedData && typeof parsedData === 'object' && cachedTime >= defaultTime) {
+      if (parsedData && typeof parsedData === 'object') {
         VILLAGE_DATA = Object.assign({}, VILLAGE_DATA, parsedData);
         window.VILLAGE_DATA = VILLAGE_DATA;
-      } else {
-        localStorage.removeItem('yeliyuru_custom_village_data_v2');
       }
     }
   } catch (e) {
@@ -156,11 +151,7 @@
     if (window.VillageStorage && window.VillageStorage.loadData) {
       window.VillageStorage.loadData().then(function(idbData) {
         if (idbData && typeof idbData === 'object' && Object.keys(idbData).length > 0) {
-          const defaultTime = Number((window.VILLAGE_DATA && window.VILLAGE_DATA.lastUpdated) || 0);
-          const cachedTime = Number(idbData.lastUpdated || 0);
-          if (cachedTime >= defaultTime) {
-            applyLiveDataset(idbData);
-          }
+          applyLiveDataset(idbData);
         }
       }).catch(function(err) {
         console.warn("VillageStorage load notice:", err);
@@ -601,26 +592,6 @@
       }
     });
 
-    if (!sectionsHtml.trim()) {
-      sectionsHtml = `
-        <section class="section" style="padding: 4rem 1rem; text-align: center;">
-          <div class="container" style="max-width: 650px; margin: 0 auto; background: var(--bg-card, rgba(255,255,255,0.05)); border: 1px dashed var(--border-color, #4b5563); border-radius: 1rem; padding: 3rem 2rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🏡</div>
-            <h2 style="margin-bottom: 0.75rem; font-size: 1.5rem;">${lang === 'kn' ? 'ಗ್ರಾಮದ ವಿವರಗಳನ್ನು ಸೇರಿಸಲು ಸಿದ್ಧವಾಗಿದೆ' : 'Welcome to the Village Portal'}</h2>
-            <p style="color: var(--text-muted, #9ca3af); line-height: 1.6; margin-bottom: 1.5rem;">
-              ${lang === 'kn' 
-                ? 'ಮಾಹಿತಿ ಮತ್ತು ಫೋಟೋಗಳನ್ನು ಆಡಳಿತ ಫಲಕದಿಂದ (Admin Panel) ಸುಲಭವಾಗಿ ಸೇರಿಸಬಹುದು.' 
-                : 'No information or photos have been published yet. You can add your village details, photos, and contacts anytime from the Admin Panel.'}
-            </p>
-            <a href="admin.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-              <span>⚙️</span>
-              <span>${lang === 'kn' ? 'ಆಡಳಿತ ಫಲಕ ತೆರೆಯಿರಿ (Admin Panel)' : 'Open Admin Panel'}</span>
-            </a>
-          </div>
-        </section>
-      `;
-    }
-
     mainContainer.innerHTML = sectionsHtml;
 
     // Re-attach DOM event listeners for rendered interactive elements
@@ -866,12 +837,6 @@
   // 6. Festivals
   function renderFestivalsSection(lang) {
     const festivals = VILLAGE_DATA.festivals || [];
-    const heroFestivalCard = document.getElementById('hero-festival-card');
-    if (!festivals || festivals.length === 0) {
-      if (heroFestivalCard) heroFestivalCard.style.display = 'none';
-      return;
-    }
-    if (heroFestivalCard) heroFestivalCard.style.display = '';
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 

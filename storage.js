@@ -11,19 +11,11 @@
 (function (window) {
   'use strict';
 
-  // Automatically purge legacy v1 databases & cache to guarantee clean slate
-  try {
-    if (window.indexedDB && window.indexedDB.deleteDatabase) {
-      window.indexedDB.deleteDatabase('YeliyuruVillagePortalDB');
-    }
-    localStorage.removeItem('yeliyuru_custom_village_data');
-  } catch (e) {}
-
-  const DB_NAME = 'YeliyuruVillagePortalDB_v2';
+  const DB_NAME = 'YeliyuruVillagePortalDB';
   const DB_VERSION = 1;
   const STORE_NAME = 'village_data_store';
-  const RECORD_KEY = 'custom_village_data_record_v2';
-  const LS_KEY = 'yeliyuru_custom_village_data_v2';
+  const RECORD_KEY = 'custom_village_data_record';
+  const LS_KEY = 'yeliyuru_custom_village_data';
 
   // 1. OPEN / MIGRATE INDEXEDDB
   function openDB() {
@@ -76,11 +68,7 @@
         req.onerror = () => reject(req.error);
       });
       if (idbData && typeof idbData === 'object' && Object.keys(idbData).length > 0) {
-        const defaultTime = Number((window.VILLAGE_DATA && window.VILLAGE_DATA.lastUpdated) || 0);
-        const cachedTime = Number(idbData.lastUpdated || 0);
-        if (cachedTime >= defaultTime) {
-          return idbData;
-        }
+        return idbData;
       }
     } catch (e) {
       console.warn("IndexedDB load notice (falling back to localStorage):", e);
@@ -91,13 +79,7 @@
       const lsRaw = localStorage.getItem(LS_KEY);
       if (lsRaw) {
         const parsed = JSON.parse(lsRaw);
-        if (parsed && typeof parsed === 'object') {
-          const defaultTime = Number((window.VILLAGE_DATA && window.VILLAGE_DATA.lastUpdated) || 0);
-          const cachedTime = Number(parsed.lastUpdated || 0);
-          if (cachedTime >= defaultTime) {
-            return parsed;
-          }
-        }
+        if (parsed && typeof parsed === 'object') return parsed;
       }
     } catch (e) {
       console.warn("localStorage load notice:", e);

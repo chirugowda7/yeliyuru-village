@@ -11,10 +11,7 @@
 
   // 1. DATA STATE
   let currentData = null;
-  try {
-    localStorage.removeItem('yeliyuru_custom_village_data');
-  } catch (e) {}
-  const LOCAL_STORAGE_KEY = 'yeliyuru_custom_village_data_v2';
+  const LOCAL_STORAGE_KEY = 'yeliyuru_custom_village_data';
   const CLOSE_ICON_SVG = '<svg class="icon icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
   function iconSvg(name) {
@@ -24,29 +21,20 @@
 
   // Initialize data from IndexedDB or localStorage or default VILLAGE_DATA
   function initData() {
-    const defaultSource = (typeof VILLAGE_DATA !== 'undefined' ? VILLAGE_DATA : window.VILLAGE_DATA) || {};
-    const defaultTime = Number(defaultSource.lastUpdated || 0);
-
-    let saved = null;
     try {
-      const savedRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (savedRaw) {
-        saved = JSON.parse(savedRaw);
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (saved) {
+        currentData = JSON.parse(saved);
+        if (currentData) delete currentData.culture;
       }
     } catch (e) {
       console.warn("localStorage read warning:", e);
     }
 
-    const savedTime = Number((saved && saved.lastUpdated) || 0);
-
-    // If local saved data is older than bundled data.js, discard outdated browser cache
-    if (saved && savedTime >= defaultTime) {
-      currentData = saved;
-    } else {
-      currentData = JSON.parse(JSON.stringify(defaultSource));
-      try {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
-      } catch (e) {}
+    if (!currentData || typeof currentData !== 'object' || Object.keys(currentData).length === 0) {
+      // Deep clone default dataset from data.js
+      const source = (typeof VILLAGE_DATA !== 'undefined' ? VILLAGE_DATA : window.VILLAGE_DATA) || {};
+      currentData = JSON.parse(JSON.stringify(source));
     }
     if (currentData) delete currentData.culture;
 
@@ -54,9 +42,9 @@
     if (window.VillageStorage && window.VillageStorage.loadData) {
       window.VillageStorage.loadData().then(idbData => {
         if (idbData && typeof idbData === 'object' && Object.keys(idbData).length > 0) {
-          const cachedTime = Number(idbData.lastUpdated || 0);
-          const curTime = Number((currentData && currentData.lastUpdated) || 0);
-          if (cachedTime >= defaultTime && cachedTime >= curTime) {
+          const bundledTime = (currentData && currentData.lastUpdated) || 0;
+          const cachedTime = (idbData && idbData.lastUpdated) || 0;
+          if (!bundledTime || cachedTime >= bundledTime) {
             currentData = idbData;
             delete currentData.culture;
             populateAllFields();
@@ -72,9 +60,9 @@
     fetch('/api/data', { cache: 'no-store' }).then(r => r.json()).then(res => {
       if (res && res.success && res.data) {
         const srvData = res.data;
-        const curTime = Number((currentData && currentData.lastUpdated) || 0);
-        const srvTime = Number((srvData && srvData.lastUpdated) || 0);
-        if (srvTime >= defaultTime && (!curTime || srvTime > curTime)) {
+        const curTime = (currentData && currentData.lastUpdated) || 0;
+        const srvTime = (srvData && srvData.lastUpdated) || 0;
+        if (!curTime || srvTime > curTime) {
           currentData = srvData;
           delete currentData.culture;
           populateAllFields();
@@ -161,7 +149,6 @@
         }
 
         previewImgEl.src = optimizedDataUrl;
-        previewImgEl.style.display = 'block';
         urlInputEl.value = optimizedDataUrl;
         if (onUpdate) onUpdate(optimizedDataUrl);
         showToast("Publishing image to live mobile portal...", false);
@@ -176,10 +163,11 @@
     // When URL or relative path typed manually
     urlInputEl.addEventListener('input', (e) => {
       const val = e.target.value.trim();
-      previewImgEl.src = val;
-      previewImgEl.style.display = val ? 'block' : 'none';
-      if (onUpdate) onUpdate(val);
-      markUnsaved();
+      if (val) {
+        previewImgEl.src = val;
+        if (onUpdate) onUpdate(val);
+        markUnsaved();
+      }
     });
   }
 
@@ -319,15 +307,7 @@
     if (d.banner) {
       setVal('url-hero-banner', d.banner.image);
       const prev = document.getElementById('preview-hero-banner');
-      if (prev) {
-        if (d.banner.image) {
-          prev.src = d.banner.image;
-          prev.style.display = 'block';
-        } else {
-          prev.src = '';
-          prev.style.display = 'none';
-        }
-      }
+      if (prev && d.banner.image) prev.src = d.banner.image;
       setVal('meta-pincode', d.banner.pincode);
       setVal('meta-elevation', d.banner.elevation);
       setVal('meta-taluk-en', d.banner.taluk?.en);
@@ -646,7 +626,7 @@
         if (!currentData.photos) currentData.photos = [];
         currentData.photos.push({
           id: Date.now(),
-          url: "",
+          url: "assets/images/hero-banner.jpg",
           title: { en: "New Gallery Photo", kn: "ಹೊಸ ಛಾಯಾಚಿತ್ರ" },
           caption: { en: "Description of photo...", kn: "ಚಿತ್ರದ ವಿವರಣೆ..." },
           tag: { en: "Village Life", kn: "ಗ್ರಾಮ ಜೀವನ" }
@@ -667,7 +647,7 @@
     grid.innerHTML = photos.map((p, idx) => `
       <div class="photo-admin-card" data-idx="${idx}">
         <div class="photo-card-img-wrap">
-          <img src="${escapeHtml(p.url || '')}" id="preview-photo-${idx}" alt="Gallery Preview" style="${p.url ? 'display:block;' : 'display:none;'}">
+          <img src="${escapeHtml(p.url || 'assets/images/hero-banner.jpg')}" id="preview-photo-${idx}" alt="Gallery Preview">
         </div>
         <div class="photo-card-body">
           <div class="form-group">
@@ -768,62 +748,17 @@
 
   // --- TAB 6: MILK & SILK (AGRICULTURE) ---
   function populateAgriculture() {
-    renderAgriculture();
-    const addBtn = document.getElementById('btn-add-crop');
-    if (addBtn) {
-      addBtn.onclick = () => window.adminAddCrop();
-    }
-  }
-
-  window.adminAddCrop = function () {
-    if (!currentData.crops) currentData.crops = [];
-    currentData.crops.push({
-      id: "crop_" + Date.now(),
-      name: { en: "Agricultural Sector / Crop", kn: "ಕೃಷಿ ವಲಯ / ಬೆಳೆ" },
-      annualProduction: { en: "", kn: "" },
-      areaCovered: { en: "", kn: "" },
-      description: { en: "", kn: "" },
-      image: ""
-    });
-    renderAgriculture();
-    markUnsaved();
-    showToast("New agriculture card added. Upload photo or fill details.");
-  };
-
-  window.adminDeleteCrop = function (idx) {
-    readAgriculture();
-    if (idx >= 0 && currentData.crops && idx < currentData.crops.length) {
-      const removed = currentData.crops.splice(idx, 1)[0];
-      renderAgriculture();
-      markUnsaved();
-      const title = removed?.name?.en || removed?.name?.kn || "Crop";
-      showToast(`Removed "${title}". Remember to click "Save All Changes" to sync.`);
-    }
-  };
-
-  function renderAgriculture() {
     const container = document.getElementById('agriculture-crops-container');
     if (!container) return;
     const crops = currentData.crops || [];
 
-    if (crops.length === 0) {
-      container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
-          <p style="color: var(--text-muted); margin-bottom: 1rem;">No agriculture sectors or crops added yet.</p>
-          <button type="button" class="btn btn-primary" onclick="window.adminAddCrop()">+ Add Agricultural Crop / Sector</button>
-        </div>
-      `;
-      return;
-    }
-
     container.innerHTML = crops.map((crop, idx) => `
-      <div class="admin-card card-full dynamic-item-card" data-idx="${idx}">
-        <button type="button" class="item-delete-btn" onclick="window.adminDeleteCrop(${idx})" title="Delete sector">${CLOSE_ICON_SVG}</button>
+      <div class="admin-card card-full" data-idx="${idx}">
         <h2 class="card-title">${escapeHtml(crop.name?.en || 'Crop Sector')} / ${escapeHtml(crop.name?.kn || '')}</h2>
         
         <div class="image-uploader-wrapper">
           <div class="image-preview-container">
-            <img id="preview-crop-${idx}" src="${escapeHtml(crop.image || '')}" alt="Crop Preview" class="image-preview" style="${crop.image ? 'display:block;' : 'display:none;'}">
+            <img id="preview-crop-${idx}" src="${escapeHtml(crop.image || 'assets/images/milk.jpg')}" alt="Crop Preview" class="image-preview">
           </div>
           <div class="image-inputs">
             <div class="form-group">
@@ -832,7 +767,7 @@
             </div>
             <div class="form-group">
               <label>Image URL / Path</label>
-              <input type="text" class="form-control crop-url" data-idx="${idx}" value="${escapeHtml(crop.image || '')}" placeholder="Upload above or enter image URL...">
+              <input type="text" class="form-control crop-url" data-idx="${idx}" value="${escapeHtml(crop.image || '')}">
             </div>
           </div>
         </div>
@@ -887,32 +822,28 @@
   }
 
   function readAgriculture() {
-    const cards = document.querySelectorAll('#agriculture-crops-container .dynamic-item-card');
-    const crops = [];
+    const cards = document.querySelectorAll('#agriculture-crops-container .admin-card');
     cards.forEach((card, idx) => {
-      const origId = currentData.crops[idx]?.id || ("crop_" + idx);
-      crops.push({
-        id: origId,
-        image: card.querySelector('.crop-url').value.trim(),
-        name: {
+      if (currentData.crops[idx]) {
+        currentData.crops[idx].image = card.querySelector('.crop-url').value.trim();
+        currentData.crops[idx].name = {
           en: card.querySelector('.crop-name-en').value.trim(),
           kn: card.querySelector('.crop-name-kn').value.trim()
-        },
-        annualProduction: {
+        };
+        currentData.crops[idx].annualProduction = {
           en: card.querySelector('.crop-yield-en').value.trim(),
           kn: card.querySelector('.crop-yield-kn').value.trim()
-        },
-        areaCovered: {
+        };
+        currentData.crops[idx].areaCovered = {
           en: card.querySelector('.crop-area-en').value.trim(),
           kn: card.querySelector('.crop-area-kn').value.trim()
-        },
-        description: {
+        };
+        currentData.crops[idx].description = {
           en: card.querySelector('.crop-desc-en').value.trim(),
           kn: card.querySelector('.crop-desc-kn').value.trim()
-        }
-      });
+        };
+      }
     });
-    currentData.crops = crops;
   }
 
   // --- TAB 7: TEMPLES ---
@@ -928,7 +859,7 @@
           era: { en: "Historic Era", kn: "ಐತಿಹಾಸಿಕ ಕಾಲ" },
           timings: { en: "6:00 AM - 8:00 PM", kn: "ಬೆಳಗ್ಗೆ ೬:೦೦ - ರಾತ್ರಿ ೮:೦೦" },
           speciality: { en: "Special spiritual significance", kn: "ವಿಶೇಷ ಮಹಿಮೆ" },
-          image: ""
+          image: "assets/images/temple.jpg"
         });
         renderTemples();
         updateBadges();
@@ -949,7 +880,7 @@
         
         <div class="image-uploader-wrapper mb-3">
           <div class="image-preview-container">
-            <img id="preview-temple-${idx}" src="${escapeHtml(t.image || '')}" alt="Temple Preview" class="image-preview" style="${t.image ? 'display:block;' : 'display:none;'}">
+            <img id="preview-temple-${idx}" src="${escapeHtml(t.image || 'assets/images/temple.jpg')}" alt="Temple Preview" class="image-preview">
           </div>
           <div class="image-inputs">
             <div class="form-group">
@@ -1206,15 +1137,7 @@
     // 2. Photo
     setVal('url-panchayat-img', p.image || 'assets/images/panchayat.jpg');
     const prev = document.getElementById('preview-panchayat-img');
-    if (prev) {
-      if (p.image) {
-        prev.src = p.image;
-        prev.style.display = 'block';
-      } else {
-        prev.src = '';
-        prev.style.display = 'none';
-      }
-    }
+    if (prev && p.image) prev.src = p.image;
 
     // 3. Office Details
     const off = p.office || {};
@@ -1326,15 +1249,15 @@
           <div class="grid-2">
             <div class="form-group">
               <label>Official Name (English)</label>
-              <input type="text" class="form-control mem-name-en" value="${escapeHtml(nameEn)}" placeholder="e.g. Official Name" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-name-en" value="${escapeHtml(nameEn)}" placeholder="e.g. Smt. Jayamma Kumar" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>ಅಧಿಕಾರಿಯ ಹೆಸರು (ಕನ್ನಡ)</label>
-              <input type="text" class="form-control mem-name-kn" value="${escapeHtml(nameKn)}" placeholder="ಉದಾ: ಅಧಿಕಾರಿಯ ಹೆಸರು" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-name-kn" value="${escapeHtml(nameKn)}" placeholder="ಉದಾ: ಶ್ರೀಮತಿ ಜಯಮ್ಮ ಕುಮಾರ್" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>Role / Position (English)</label>
-              <input type="text" class="form-control mem-role-en" value="${escapeHtml(roleEn)}" placeholder="e.g. Panchayat President" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-role-en" value="${escapeHtml(roleEn)}" placeholder="e.g. Panchayat President (ಅಧ್ಯಕ್ಷರು)" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>ಹುದ್ದೆ / ಪದವಿ (ಕನ್ನಡ)</label>
@@ -1342,7 +1265,7 @@
             </div>
             <div class="form-group">
               <label>Direct Phone / Contact Number</label>
-              <input type="text" class="form-control mem-phone" value="${escapeHtml(phone)}" placeholder="e.g. +91 98765 43210" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-phone" value="${escapeHtml(phone)}" placeholder="e.g. +91 98451 22340" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>Display Icon Badge</label>
@@ -1538,17 +1461,9 @@
   // --- TAB 11: SCHOOLS & HEALTH ---
   function populateSchools() {
     const prev = document.getElementById('preview-school-img');
-    const schImg = currentData.schools?.[0]?.image || '';
+    const schImg = currentData.schools?.[0]?.image || 'assets/images/school.jpg';
     setVal('url-school-img', schImg);
-    if (prev) {
-      if (schImg) {
-        prev.src = schImg;
-        prev.style.display = 'block';
-      } else {
-        prev.src = '';
-        prev.style.display = 'none';
-      }
-    }
+    if (prev) prev.src = schImg;
 
     attachImageUploader(
       document.getElementById('file-school-img'),
@@ -1934,16 +1849,7 @@
     const m = currentData.map || {};
     setVal('url-satellite-img', m.satelliteImage);
     const prev = document.getElementById('preview-satellite-img');
-    const satImg = m.satelliteImage || m.mapImage || '';
-    if (prev) {
-      if (satImg) {
-        prev.src = satImg;
-        prev.style.display = 'block';
-      } else {
-        prev.src = '';
-        prev.style.display = 'none';
-      }
-    }
+    if (prev && m.satelliteImage) prev.src = m.satelliteImage;
 
     setVal('map-coords', m.coordinates);
     setVal('map-elevation', m.elevation);
