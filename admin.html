@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Yeliyuru Village Portal - ಯೆಲಿಯೂರು ಗ್ರಾಮ ಆಡಳಿತ ನಿಯಂತ್ರಣ ಫಲಕ</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2310b981%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%223%22/><path d=%22M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z%22/></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="admin.css?v=3.7">
+</head>
+<body>
+
+  <!-- Admin Security Gate Modal -->
+  <div class="admin-auth-overlay" id="admin-auth-overlay">
+    <div class="admin-auth-card">
+      <div class="auth-icon-badge">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 1 4 4.9 8.6 8.6 0 0 1-5 2.1c-.2-1.3-.2-2.8.5-4.2.6-1.1 1.6-2 2.5-2.8z"/></svg>
+      </div>
+      <h2 class="auth-title">Yeliyuru Admin Login</h2>
+      <p class="auth-sub">Enter the administrator password to access village portal controls & image editors.</p>
+      
+      <form id="admin-login-form" class="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label for="admin-pass-input">Admin Password</label>
+          <div class="password-input-wrap">
+            <input type="password" id="admin-pass-input" class="form-control" placeholder="Enter password" autocomplete="current-password" autofocus>
+            <button type="button" class="btn-toggle-pass" id="btn-toggle-pass" title="Show/Hide password">
+              <svg class="icon icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-error-msg" id="auth-error-msg"></div>
+
+        <button type="submit" class="btn btn-primary auth-submit-btn" id="btn-submit-auth">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+          <span>Unlock Admin Panel</span>
+        </button>
+        
+        <div class="auth-card-footer">
+          <a href="index.html" class="auth-back-link">← Return to Public Village Portal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Creator Notice (First of Page) -->
+  <aside class="admin-creator-bar" aria-label="Portal Creator Attribution">
+    <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/><path d="M19 4v4"/><path d="M21 6h-4"/></svg> Created by <strong>Chirugowda Yeliyuru</strong> | ಯೆಲಿಯೂರು ಗ್ರಾಮ ಪೋರ್ಟಲ್ - ನಿರ್ಮಾಣ: <strong>ಚಿರು ಗೌಡ ಯೆಲಿಯೂರು</strong></span>
+  </aside>
+
+  <!-- Top Navigation Header -->
+  <header class="admin-topbar">
+    <div class="admin-topbar-inner">
+      <div class="admin-brand">
+        <a href="index.html" class="brand-badge" title="Go to Yeliyuru Public Portal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 1 4 4.9 8.6 8.6 0 0 1-5 2.1c-.2-1.3-.2-2.8.5-4.2.6-1.1 1.6-2 2.5-2.8z"/></svg>
+        </a>
+        <div class="admin-brand-info">
+          <div class="brand-name">Yeliyuru Portal Admin</div>
+          <div class="brand-sub">ಯೆಲಿಯೂರು ಗ್ರಾಮ ಆಡಳಿತ & ಮಾಹಿತಿ ಸಂಪಾದನಾ ಫಲಕ</div>
+        </div>
+      </div>
+
+      <div class="admin-actions">
+        <!-- Status Indicators -->
+        <div class="admin-status-group">
+          <!-- SQLite DB Indicator -->
+          <span class="status-indicator db-status-indicator" id="db-status-indicator" title="SQLite Database: yeliyuru.db (Auto-Syncing)">
+            <span class="status-dot db-dot" style="background-color: #10b981;"></span>
+            <span id="db-status-text">SQLite Online</span>
+          </span>
+
+          <!-- Mobile Wi-Fi Link -->
+          <a href="http://192.168.1.16:8000" target="_blank" class="status-indicator mobile-live-pill" id="mobile-live-pill" title="Open Portal on Mobile via Wi-Fi: http://192.168.1.16:8000">
+            <span class="status-dot" style="background-color: #3b82f6;"></span>
+            <span>📱 Mobile Wi-Fi: 192.168.1.16:8000</span>
+          </a>
+
+          <!-- Live status -->
+          <span class="status-indicator" id="save-status" title="Sync Status">
+            <span class="status-dot"></span>
+            <span id="status-text">Synced</span>
+          </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="admin-buttons-group">
+          <!-- Unified Save & Publish Button -->
+          <button type="button" class="btn btn-primary btn-save-unified" id="btn-save-all" title="Save to SQLite DB, update data.js, and publish live to Mobile / GitHub Pages">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span class="btn-label">💾 Save & Publish Live</span>
+          </button>
+
+          <!-- View Live Portal -->
+          <a href="index.html" target="_blank" class="btn btn-secondary" title="Preview public portal in new tab">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            <span class="btn-label">View Portal ↗</span>
+          </a>
+
+          <!-- Tools Dropdown (Export, Copy, Reset) -->
+          <div class="admin-dropdown-wrap" id="tools-dropdown-wrap">
+            <button type="button" class="btn btn-outline" id="btn-tools-toggle" title="More export tools and dataset options">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              <span class="btn-label">Tools ▾</span>
+            </button>
+            <div class="admin-dropdown-menu" id="tools-dropdown-menu">
+              <button type="button" class="dropdown-item" id="btn-export-file" title="Download updated data.js file for project">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download data.js</span>
+              </button>
+              <button type="button" class="dropdown-item" id="btn-copy-code" title="Copy JavaScript code to clipboard">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                <span>Copy Code</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item dropdown-item-danger" id="btn-reset-default" title="Revert to original default dataset">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                <span>Reset to Default</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Logout Button -->
+          <button type="button" class="btn btn-outline" id="btn-admin-logout" title="Lock and log out of admin panel">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span class="btn-label">Lock</span>
+          </button>
+
+          <!-- Dark/Light theme toggle -->
+          <button type="button" class="btn-icon" id="admin-theme-toggle" title="Toggle dark/light theme">
+            <span id="theme-icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="admin-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">SECTIONS</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <button type="button" class="nav-item active" data-tab="tab-general">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 1 4 4.9 8.6 8.6 0 0 1-5 2.1c-.2-1.3-.2-2.8.5-4.2.6-1.1 1.6-2 2.5-2.8z"/></svg></span>
+          <span class="nav-label">General & Banner</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-about">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          <span class="nav-label">About Yeliyuru</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-history">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1.5a2.5 2.5 0 0 0-5 0V19"/><path d="M4 5v14a2 2 0 0 0 2 2h2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg></span>
+          <span class="nav-label">History & Heritage</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-facts">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+          <span class="nav-label">Quick Facts</span>
+          <span class="nav-badge" id="badge-facts">8</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-photos">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>
+          <span class="nav-label">Photo Gallery</span>
+          <span class="nav-badge" id="badge-photos">8</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-agriculture">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+          <span class="nav-label">Milk & Silk (Agri)</span>
+          <span class="nav-badge">2</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-temples">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="22" x2="22" y2="22"/><line x1="12" y1="2" x2="20" y2="7"/><line x1="12" y1="2" x2="4" y2="7"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="6" y1="11" x2="6" y2="18"/><line x1="10" y1="11" x2="10" y2="18"/><line x1="14" y1="11" x2="14" y2="18"/><line x1="18" y1="11" x2="18" y2="18"/></svg></span>
+          <span class="nav-label">Temples & Shrines</span>
+          <span class="nav-badge" id="badge-temples">4</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-festivals">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="nav-label">Festivals & Countdown</span>
+          <span class="nav-badge" id="badge-festivals">5</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-panchayat">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg></span>
+          <span class="nav-label">Grama Panchayat</span>
+          <span class="nav-badge" id="badge-members">4</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-schools">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+          <span class="nav-label">Schools & Health</span>
+          <span class="nav-badge" id="badge-schools">3</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-transport">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M2 12h20"/><path d="M4 18h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/><path d="M6 18v2"/><path d="M18 18v2"/></svg></span>
+          <span class="nav-label">Transport & Routes</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-contacts">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <span class="nav-label">Emergency Contacts</span>
+          <span class="nav-badge" id="badge-contacts">6</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-notices">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
+          <span class="nav-label">Public Notices</span>
+          <span class="nav-badge" id="badge-notices">4</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="tab-map">
+          <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></span>
+          <span class="nav-label">Maps & Satellite</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-help-card">
+          <div class="help-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> Instant Live Sync</div>
+          <div class="help-desc">Any changes saved here immediately update the live public site in your browser.</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="admin-main">
+
+      <!-- =====================================================================
+           TAB 1: GENERAL & BANNER
+           ===================================================================== -->
+      <section class="tab-panel active" id="tab-general">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">General Information & Hero Banner</h1>
+            <p class="panel-subtitle">Edit the primary village identity, titles, administrative badges, and hero background banner.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <!-- Village Names -->
+          <div class="admin-card">
+            <h2 class="card-title">Village Identity</h2>
+            <div class="form-group">
+              <label for="gen-name-en">Village Name (English)</label>
+              <input type="text" id="gen-name-en" class="form-control" placeholder="e.g. Yeliyuru">
+            </div>
+            <div class="form-group">
+              <label for="gen-name-kn">ಗ್ರಾಮದ ಹೆಸರು (ಕನ್ನಡ)</label>
+              <input type="text" id="gen-name-kn" class="form-control" placeholder="ಉದಾ: ಯೆಲಿಯೂರು">
+            </div>
+            <div class="form-group">
+              <label for="gen-shortsub-en">Short Header Subtitle (English)</label>
+              <input type="text" id="gen-shortsub-en" class="form-control" placeholder="e.g. Devanahalli, Bengaluru Rural">
+            </div>
+            <div class="form-group">
+              <label for="gen-shortsub-kn">ಕಿರು ಉಪಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+              <input type="text" id="gen-shortsub-kn" class="form-control" placeholder="ಉದಾ: ದೇವನಹಳ್ಳಿ, ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ">
+            </div>
+          </div>
+
+          <!-- Official Subtitles & Tagline -->
+          <div class="admin-card">
+            <h2 class="card-title">Badge Subtitle & Taglines</h2>
+            <div class="form-group">
+              <label for="gen-subtitle-en">Full Administrative Badge (English)</label>
+              <input type="text" id="gen-subtitle-en" class="form-control" placeholder="Grama Panchayat | Devanahalli Taluk, Bengaluru Rural District, Karnataka">
+            </div>
+            <div class="form-group">
+              <label for="gen-subtitle-kn">ಪೂರ್ಣ ಆಡಳಿತಾತ್ಮಕ ಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+              <input type="text" id="gen-subtitle-kn" class="form-control" placeholder="ಗ್ರಾಮ ಪಂಚಾಯತಿ | ದೇವನಹಳ್ಳಿ ತಾಲೂಕು, ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ ಜಿಲ್ಲೆ, ಕರ್ನಾಟಕ">
+            </div>
+            <div class="form-group">
+              <label for="gen-tagline-en">Village Tagline (English)</label>
+              <input type="text" id="gen-tagline-en" class="form-control" placeholder="The Land of Milk & Silk — The Biggest Producer in Bengaluru Rural District">
+            </div>
+            <div class="form-group">
+              <label for="gen-tagline-kn">ಗ್ರಾಮದ ಘೋಷವಾಕ್ಯ (ಕನ್ನಡ)</label>
+              <input type="text" id="gen-tagline-kn" class="form-control" placeholder="ಹಾಲು ಮತ್ತು ರೇಷ್ಮೆಯ ಸಮೃದ್ಧ ನಾಡು — ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ ಜಿಲ್ಲೆಯ ಅತಿ ದೊಡ್ಡ ಉತ್ಪಾದಕ ಗ್ರಾಮ">
+            </div>
+          </div>
+
+          <!-- Hero Banner & Geographic Metadata -->
+          <div class="admin-card card-full">
+            <h2 class="card-title">Hero Banner Image & Location Metadata</h2>
+            
+            <div class="image-uploader-wrapper">
+              <div class="image-preview-container">
+                <img id="preview-hero-banner" src="assets/images/hero-banner.jpg" alt="Hero Banner Preview" class="image-preview">
+                <span class="preview-badge">Current Banner</span>
+              </div>
+              <div class="image-inputs">
+                <div class="form-group">
+                  <label>Upload New Banner Image from Computer</label>
+                  <input type="file" id="file-hero-banner" accept="image/*" class="form-control file-input">
+                  <small class="form-hint">Choose any JPG/PNG from your PC. Automatically saved and previewed.</small>
+                </div>
+                <div class="form-group">
+                  <label for="url-hero-banner">Or Enter Image Path / URL</label>
+                  <input type="text" id="url-hero-banner" class="form-control" placeholder="assets/images/hero-banner.jpg or https://...">
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-3 mt-4">
+              <div class="form-group">
+                <label for="meta-pincode">PIN Code</label>
+                <input type="text" id="meta-pincode" class="form-control" placeholder="562110">
+              </div>
+              <div class="form-group">
+                <label for="meta-taluk-en">Taluk (English)</label>
+                <input type="text" id="meta-taluk-en" class="form-control" placeholder="Devanahalli">
+              </div>
+              <div class="form-group">
+                <label for="meta-taluk-kn">ತಾಲೂಕು (ಕನ್ನಡ)</label>
+                <input type="text" id="meta-taluk-kn" class="form-control" placeholder="ದೇವನಹಳ್ಳಿ">
+              </div>
+              <div class="form-group">
+                <label for="meta-district-en">District (English)</label>
+                <input type="text" id="meta-district-en" class="form-control" placeholder="Bengaluru Rural">
+              </div>
+              <div class="form-group">
+                <label for="meta-district-kn">ಜಿಲ್ಲೆ (ಕನ್ನಡ)</label>
+                <input type="text" id="meta-district-kn" class="form-control" placeholder="ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ">
+              </div>
+              <div class="form-group">
+                <label for="meta-elevation">Elevation / Region</label>
+                <input type="text" id="meta-elevation" class="form-control" placeholder="880 m above sea level (Nandi Valley Belt)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Portal Creator & WhatsApp Contact -->
+          <div class="admin-card card-full">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <h2 class="card-title" style="margin-bottom: 0;">Portal Creator & WhatsApp Direct Contact</h2>
+              <span class="preview-badge" style="background: rgba(37, 211, 102, 0.15); color: #25d366; border: 1px solid rgba(37, 211, 102, 0.3); font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.8rem;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 2px;"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M10 13a4 4 0 0 0 4 4l1.5-1.5a1 1 0 0 0 .3-.9 8 8 0 0 0-1.8-3.6 1 1 0 0 0-.9-.3L11.5 12Z"/></svg>
+                Active WhatsApp Integration
+              </span>
+            </div>
+            <p class="form-hint" style="margin-bottom: 1.25rem;">
+              Configure your creator profile and direct WhatsApp contact number. When visitors on the portal click the floating <strong>"Chat on WhatsApp"</strong> widget, footer link, or emergency directory, it immediately opens a direct WhatsApp chat with you.
+            </p>
+            <div class="grid-3">
+              <div class="form-group">
+                <label for="gen-creator-en">Creator Name (English)</label>
+                <input type="text" id="gen-creator-en" class="form-control" placeholder="Chirugowda Yeliyuru">
+              </div>
+              <div class="form-group">
+                <label for="gen-creator-kn">ನಿರ್ಮಾತೃ ಹೆಸರು (ಕನ್ನಡ)</label>
+                <input type="text" id="gen-creator-kn" class="form-control" placeholder="ಚಿರು ಗೌಡ ಯೆಲಿಯೂರು">
+              </div>
+              <div class="form-group">
+                <label for="gen-creator-whatsapp">WhatsApp Phone Number</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="tel" id="gen-creator-whatsapp" class="form-control" placeholder="+91 98765 43210" style="flex: 1;">
+                  <a href="#" id="btn-test-whatsapp" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 0.85rem;" title="Test WhatsApp chat link">
+                    <svg class="icon icon-whatsapp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; color: #25d366;"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M10 13a4 4 0 0 0 4 4l1.5-1.5a1 1 0 0 0 .3-.9 8 8 0 0 0-1.8-3.6 1 1 0 0 0-.9-.3L11.5 12Z"/></svg>
+                    <span>Test Chat</span>
+                  </a>
+                </div>
+                <small class="form-hint">Format: 10 digits or with +91 country code (e.g. +91 9876543210).</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 2: ABOUT
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-about">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">About Yeliyuru Section</h1>
+            <p class="panel-subtitle">Edit the about introduction, narrative description, and key pillar highlights.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <div class="admin-card card-full">
+            <h2 class="card-title">Headings & Overview</h2>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="about-heading-en">Section Heading (English)</label>
+                <input type="text" id="about-heading-en" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="about-heading-kn">ವಿಭಾಗದ ಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+                <input type="text" id="about-heading-kn" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="about-subheading-en">Subheading (English)</label>
+                <input type="text" id="about-subheading-en" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="about-subheading-kn">ಉಪಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+                <input type="text" id="about-subheading-kn" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group mt-3">
+              <label for="about-desc-en">Full Narrative Description (English)</label>
+              <textarea id="about-desc-en" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="form-group mt-3">
+              <label for="about-desc-kn">ಸಂಪೂರ್ಣ ವಿವರಣೆ (ಕನ್ನಡ)</label>
+              <textarea id="about-desc-kn" class="form-control" rows="5"></textarea>
+            </div>
+          </div>
+
+          <!-- About Highlights -->
+          <div class="admin-card card-full">
+            <h2 class="card-title">Key Pillars (4 Highlights)</h2>
+            <div id="about-highlights-list" class="dynamic-list-container">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 3: HISTORY
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-history">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">History & Heritage</h1>
+            <p class="panel-subtitle">Manage historical narrative and chronology milestones from Kempegowda era to present day.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="admin-card card-full mb-4">
+          <h2 class="card-title">Historical Narrative</h2>
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="history-heading-en">Heading (English)</label>
+              <input type="text" id="history-heading-en" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="history-heading-kn">ಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+              <input type="text" id="history-heading-kn" class="form-control">
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="history-narrative-en">History Narrative (English)</label>
+            <textarea id="history-narrative-en" class="form-control" rows="4"></textarea>
+          </div>
+          <div class="form-group mt-3">
+            <label for="history-narrative-kn">ಇತಿಹಾಸದ ವಿವರಣೆ (ಕನ್ನಡ)</label>
+            <textarea id="history-narrative-kn" class="form-control" rows="4"></textarea>
+          </div>
+        </div>
+
+        <div class="admin-card card-full">
+          <div class="card-header-flex">
+            <h2 class="card-title">Timeline Milestones</h2>
+            <button type="button" class="btn btn-sm btn-outline" id="btn-add-milestone">+ Add Timeline Era</button>
+          </div>
+          <div id="timeline-list" class="dynamic-list-container">
+            <!-- Timeline items rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 4: QUICK FACTS
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-facts">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Quick Facts & Statistics</h1>
+            <p class="panel-subtitle">Key metrics displayed on the village homepage (PIN code, dairy rank, silk rank, population, etc.).</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" id="btn-add-fact">+ Add New Fact</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="facts-container" class="card-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 5: PHOTO GALLERY
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-photos">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Village Photo Gallery & Lightbox</h1>
+            <p class="panel-subtitle">Upload new photos directly from your computer, edit bilingual captions, and organize gallery tags.</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-primary" id="btn-add-photo">+ Upload / Add New Photo</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="photos-grid" class="photos-management-grid">
+          <!-- Populated dynamically with image preview cards -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 6: MILK & SILK (AGRICULTURE)
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-agriculture">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Milk & Silk Agricultural Powerhouse</h1>
+            <p class="panel-subtitle">Manage dairy cooperative data (BAMUL) and mulberry sericulture stats, images, and highlights.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div id="agriculture-crops-container" class="card-grid">
+          <!-- Rendered dynamically for Milk and Silk cards -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 7: TEMPLES & SHRINES
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-temples">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Temples & Spiritual Shrines</h1>
+            <p class="panel-subtitle">Manage Sri Venugopala Swamy Temple, Sri Gangamma Temple, Basaveshwara, and other shrines.</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" id="btn-add-temple">+ Add New Temple</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="temples-container" class="card-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 8: FESTIVALS & COUNTDOWN
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-festivals">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Festivals & Live Countdown Calendar</h1>
+            <p class="panel-subtitle">Event dates (YYYY-MM-DD) automatically feed the live festival countdown badge on the homepage.</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" id="btn-add-festival">+ Add New Festival</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="festivals-container" class="card-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+
+
+      <!-- =====================================================================
+           TAB 10: GRAMA PANCHAYAT
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-panchayat">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Grama Panchayat & Administration</h1>
+            <p class="panel-subtitle">Edit the Panchayat office details, working hours, leadership contacts, names, designations, and citizen services.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <!-- Section Headings -->
+          <div class="admin-card card-full">
+            <h2 class="card-title">Section Headings (ಗ್ರಾಮ ಪಂಚಾಯತಿ ಆಡಳಿತ ಶೀರ್ಷಿಕೆ)</h2>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="panchayat-heading-en">Section Heading (English)</label>
+                <input type="text" id="panchayat-heading-en" class="form-control" placeholder="Grama Panchayat Administration">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-heading-kn">ವಿಭಾಗದ ಮುಖ್ಯ ಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+                <input type="text" id="panchayat-heading-kn" class="form-control" placeholder="ಗ್ರಾಮ ಪಂಚಾಯತಿ ಆಡಳಿತ">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-subheading-en">Section Subtitle (English)</label>
+                <textarea id="panchayat-subheading-en" class="form-control" rows="2" placeholder="Devanahalli Taluk, Bengaluru Rural District — Dedicated to sustainable development and digital citizen services."></textarea>
+              </div>
+              <div class="form-group">
+                <label for="panchayat-subheading-kn">ವಿಭಾಗದ ವಿವರಣೆ / ಉಪ ಶೀರ್ಷಿಕೆ (ಕನ್ನಡ)</label>
+                <textarea id="panchayat-subheading-kn" class="form-control" rows="2" placeholder="ದೇವನಹಳ್ಳಿ ತಾಲೂಕು, ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ ಜಿಲ್ಲೆ — ಗ್ರಾಮದ ಸಮಗ್ರ ಪ್ರಗತಿಗೆ ಬದ್ಧವಾಗಿರುವ ಪಾರದರ್ಶಕ ಆಡಳಿತ."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panchayat Office Details & Photo -->
+          <div class="admin-card card-full">
+            <h2 class="card-title">Panchayat Office Details & Photo (ಕಚೇರಿ ವಿಳಾಸ & ಕಾರ್ಯಾಲಯದ ಸಮಯ)</h2>
+            <div class="image-uploader-wrapper">
+              <div class="image-preview-container">
+                <img id="preview-panchayat-img" src="assets/images/panchayat.jpg" alt="Panchayat Preview" class="image-preview">
+              </div>
+              <div class="image-inputs">
+                <div class="form-group">
+                  <label>Upload Panchayat Photo from Computer</label>
+                  <input type="file" id="file-panchayat-img" accept="image/*" class="form-control file-input">
+                </div>
+                <div class="form-group">
+                  <label for="url-panchayat-img">Image URL / Path</label>
+                  <input type="text" id="url-panchayat-img" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2 mt-4">
+              <div class="form-group">
+                <label for="panchayat-office-name-en">Office Name (English)</label>
+                <input type="text" id="panchayat-office-name-en" class="form-control" placeholder="Yeliyuru Grama Panchayat Office">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-office-name-kn">ಕಚೇರಿ ಹೆಸರು (ಕನ್ನಡ)</label>
+                <input type="text" id="panchayat-office-name-kn" class="form-control" placeholder="ಯೆಲಿಯೂರು ಗ್ರಾಮ ಪಂಚಾಯತಿ ಕಾರ್ಯಾಲಯ">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-address-en">Office Address (English)</label>
+                <input type="text" id="panchayat-address-en" class="form-control" placeholder="Main Road, Yeliyuru, Devanahalli Taluk, Bengaluru Rural - 562110">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-address-kn">ಕಚೇರಿ ವಿಳಾಸ (ಕನ್ನಡ)</label>
+                <input type="text" id="panchayat-address-kn" class="form-control" placeholder="ಮುಖ್ಯ ರಸ್ತೆ, ಯೆಲಿಯೂರು, ದೇವನಹಳ್ಳಿ ತಾಲೂಕು, ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ - ೫೬೨೧೧೦">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-hours-en">Working Hours (English)</label>
+                <input type="text" id="panchayat-hours-en" class="form-control" placeholder="Monday to Saturday: 10:00 AM - 5:30 PM (2nd & 4th Sat Holiday)">
+              </div>
+              <div class="form-group">
+                <label for="panchayat-hours-kn">ಕಾರ್ಯನಿರ್ವಹಣೆಯ ಸಮಯ (ಕನ್ನಡ)</label>
+                <input type="text" id="panchayat-hours-kn" class="form-control" placeholder="ಸೋಮವಾರದಿಂದ ಶನಿವಾರ: ಬೆಳಗ್ಗೆ ೧೦:೦೦ - ಸಂಜೆ ೫:೩೦">
+              </div>
+            </div>
+          </div>
+
+          <!-- Panchayat Leadership & Officials (Contacts, Names & Details) -->
+          <div class="admin-card card-full">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="card-title">Panchayat Leadership & Officials (ಅಧ್ಯಕ್ಷರು, PDO, ಉಪಾಧ್ಯಕ್ಷರು ಮತ್ತು ಸದಸ್ಯರು)</h2>
+                <p class="card-subtitle-small">Edit names, Kannada designations, contact phone numbers, and icon badges for the administration cards.</p>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-add-member">+ Add Leader / Official</button>
+            </div>
+            <div id="panchayat-members-list" class="dynamic-list-container">
+              <!-- Populated dynamically with rich card editor -->
+            </div>
+          </div>
+
+          <!-- Panchayat Citizen Services & Welfare Schemes -->
+          <div class="admin-card card-full">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="card-title">Key Citizen Services & Welfare Schemes (ಸಾರ್ವಜನಿಕ ಸೇವೆಗಳು)</h2>
+                <p class="card-subtitle-small">E-Swathu Khatha registration, Grama One certificates, and digital services.</p>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-add-service">+ Add Citizen Service</button>
+            </div>
+            <div id="panchayat-services-list" class="dynamic-list-container">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 11: SCHOOLS & HEALTH
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-schools">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Schools & Healthcare Facilities</h1>
+            <p class="panel-subtitle">Government schools, Anganwadi, and Primary Health Centre (PHC) doctors and facilities.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <div class="admin-card card-full">
+            <h2 class="card-title">Schools & Healthcare Image</h2>
+            <div class="image-uploader-wrapper">
+              <div class="image-preview-container">
+                <img id="preview-school-img" src="assets/images/school.jpg" alt="School Preview" class="image-preview">
+              </div>
+              <div class="image-inputs">
+                <div class="form-group">
+                  <label>Upload School/Health Photo from Computer</label>
+                  <input type="file" id="file-school-img" accept="image/*" class="form-control file-input">
+                </div>
+                <div class="form-group">
+                  <label for="url-school-img">Image URL / Path</label>
+                  <input type="text" id="url-school-img" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-card card-full">
+            <div class="card-header-flex">
+              <h2 class="card-title">Educational Institutions</h2>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-add-school">+ Add School</button>
+            </div>
+            <div id="schools-list" class="dynamic-list-container">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <div class="admin-card card-full">
+            <div class="card-header-flex">
+              <h2 class="card-title">Healthcare Facilities (PHC / Sub-Centre)</h2>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-add-health">+ Add Healthcare Unit</button>
+            </div>
+            <div id="health-list" class="dynamic-list-container">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 12: TRANSPORT
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-transport">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Transport & Connectivity</h1>
+            <p class="panel-subtitle">Road connectivity, airport proximity (BLR), BMTC/KSRTC bus timings, and railway connections.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <div class="admin-card card-full">
+            <h2 class="card-title">Key Connectivity Points</h2>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="transport-road-en">Road Connectivity (English)</label>
+                <input type="text" id="transport-road-en" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="transport-road-kn">ರಸ್ತೆ ಸಂಪರ್ಕ (ಕನ್ನಡ)</label>
+                <input type="text" id="transport-road-kn" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="transport-airport-en">Kempegowda Airport Proximity (English)</label>
+                <input type="text" id="transport-airport-en" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="transport-airport-kn">ವಿಮಾನ ನಿಲ್ದಾಣ ಸಾಮೀಪ್ಯ (ಕನ್ನಡ)</label>
+                <input type="text" id="transport-airport-kn" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="transport-rail-en">Nearest Railway Station (English)</label>
+                <input type="text" id="transport-rail-en" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="transport-rail-kn">ಹತ್ತಿರದ ರೈಲು ನಿಲ್ದಾಣ (ಕನ್ನಡ)</label>
+                <input type="text" id="transport-rail-kn" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 13: CONTACTS
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-contacts">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Important & Emergency Contacts</h1>
+            <p class="panel-subtitle">Directory of Panchayat officials, milk cooperative, health workers, electricity, police, and ambulances.</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" id="btn-add-contact">+ Add Contact</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="contacts-container" class="card-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 14: PUBLIC NOTICES
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-notices">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Public Notices & Official Announcements</h1>
+            <p class="panel-subtitle">Publish Grama Sabha meetings, vaccination drives, sericulture workshops, and agricultural advisories.</p>
+          </div>
+          <div class="panel-actions">
+            <button type="button" class="btn btn-outline" id="btn-add-notice">+ Post New Notice</button>
+            <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+          </div>
+        </div>
+
+        <div id="notices-container" class="card-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 15: GOOGLE MAPS & SATELLITE
+           ===================================================================== -->
+      <section class="tab-panel" id="tab-map">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">Google Maps & Satellite Showcase</h1>
+            <p class="panel-subtitle">Showcase Yeliyuru village's geographic coordinates, satellite imagery, and direct Google Maps navigation.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-save-quick"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Save Changes</span></button>
+        </div>
+
+        <div class="card-grid">
+          <div class="admin-card card-full">
+            <h2 class="card-title">Google Maps Satellite Showcase Image</h2>
+            <div class="image-uploader-wrapper">
+              <div class="image-preview-container">
+                <img id="preview-satellite-img" src="assets/images/google-map.jpg" alt="Satellite Preview" class="image-preview">
+                <span class="preview-badge">Satellite View</span>
+              </div>
+              <div class="image-inputs">
+                <div class="form-group">
+                  <label>Upload Satellite Image from Computer</label>
+                  <input type="file" id="file-satellite-img" accept="image/*" class="form-control file-input">
+                </div>
+                <div class="form-group">
+                  <label for="url-satellite-img">Satellite Image URL / Path</label>
+                  <input type="text" id="url-satellite-img" class="form-control" placeholder="assets/images/google-map.jpg">
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2 mt-4">
+              <div class="form-group">
+                <label for="map-coords">GPS Coordinates</label>
+                <input type="text" id="map-coords" class="form-control" placeholder="13.2487° N, 77.7126° E">
+              </div>
+              <div class="form-group">
+                <label for="map-elevation">Elevation</label>
+                <input type="text" id="map-elevation" class="form-control" placeholder="880 meters above sea level">
+              </div>
+              <div class="form-group">
+                <label for="map-url-search">Google Maps Direct URL</label>
+                <input type="text" id="map-url-search" class="form-control" placeholder="https://www.google.com/maps/search/?api=1&query=Yeliyuru+Devanahalli">
+              </div>
+              <div class="form-group">
+                <label for="map-url-embed">Google Maps Embed URL (Iframe)</label>
+                <input type="text" id="map-url-embed" class="form-control" placeholder="https://www.google.com/maps/embed?...">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="admin-toast" id="admin-toast">
+    <span id="toast-icon">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    </span>
+    <span id="toast-msg">Changes saved successfully</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="icons.js?v=4.0"></script>
+  <script src="storage.js?v=4.0"></script>
+  <script src="data.js?v=4.0"></script>
+  <script src="admin.js?v=4.0"></script>
+</body>
+</html>

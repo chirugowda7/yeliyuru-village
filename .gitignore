@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# SQLite temporary runtime files
+*.db-shm
+*.db-wal
+
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary scratch and debug scripts
+scratch/
+

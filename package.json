@@ -1,0 +1,19 @@
+{
+  "name": "yeliyuru-village-portal",
+  "version": "1.0.0",
+  "description": "Official community portal and database for Yeliyuru Village (Devanahalli Taluk, Bengaluru Rural District, Karnataka)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node -e \"require('./db.js'); console.log('Database ready.');\""
+  },
+  "keywords": [
+    "yeliyuru",
+    "devanahalli",
+    "bengaluru-rural",
+    "karnataka",
+    "sqlite"
+  ],
+  "author": "Chirugowda Yeliyuru",
+  "license": "ISC"
+}
