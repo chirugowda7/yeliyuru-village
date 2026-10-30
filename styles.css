@@ -37,12 +37,12 @@
   --error: #dc2626;
 
   /* Light Theme (Default) */
-  --bg-page: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-card-hover: #fcfcfd;
-  --bg-elevated: #ffffff;
+  --bg-page: transparent;
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-card-hover: rgba(255, 255, 255, 0.94);
+  --bg-elevated: rgba(255, 255, 255, 0.90);
   --bg-glass: rgba(255, 255, 255, 0.85);
-  --bg-input: #f1f5f9;
+  --bg-input: rgba(241, 245, 249, 0.85);
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
   --text-main: #0f172a;
@@ -61,12 +61,12 @@
 
 /* Dark Theme Overrides */
 [data-theme="dark"] {
-  --bg-page: #090d16;
-  --bg-card: #0f172a;
-  --bg-card-hover: #17223b;
-  --bg-elevated: #1e293b;
-  --bg-glass: rgba(15, 23, 42, 0.88);
-  --bg-input: #1e293b;
+  --bg-page: transparent;
+  --bg-card: rgba(15, 23, 42, 0.72);
+  --bg-card-hover: rgba(23, 34, 59, 0.85);
+  --bg-elevated: rgba(30, 41, 59, 0.80);
+  --bg-glass: rgba(15, 23, 42, 0.82);
+  --bg-input: rgba(30, 41, 59, 0.75);
   --border-color: rgba(255, 255, 255, 0.09);
   --border-light: rgba(255, 255, 255, 0.05);
   --text-main: #f8fafc;
@@ -98,13 +98,18 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  background-color: #090d16;
+}
+
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-page);
+  background-color: transparent;
   color: var(--text-main);
   line-height: 1.65;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
   overflow-x: hidden;
+  position: relative;
 }
 
 /* Kannada font application */
@@ -158,18 +163,17 @@ button, input, textarea, select {
   padding-right: 1.5rem;
 }
 
-/* Universal Section Spacing */
+/* Universal Section Spacing - Transparent so fixed background shows continuously */
 .village-section {
   padding: 5.5rem 0;
   position: relative;
+  background: transparent !important;
 }
 
-.village-section:nth-child(even) {
-  background-color: var(--bg-card);
-}
-
+.village-section:nth-child(even),
 .village-section:nth-child(odd) {
-  background-color: var(--bg-page);
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* Section Header Styles */
@@ -746,42 +750,58 @@ button, input, textarea, select {
 }
 
 /* --------------------------------------------------------------------------
-   5. Hero Banner Section
+   5. Fixed Full-Page Background & Transparent Hero Section
    -------------------------------------------------------------------------- */
+/* Full-viewport fixed background layer (stays fixed while entire page content scrolls) */
+.page-fixed-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background-image: url('assets/images/hero-banner.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+.page-fixed-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(9, 13, 22, 0.40) 0%,
+    rgba(9, 13, 22, 0.65) 30%,
+    rgba(9, 13, 22, 0.82) 100%
+  );
+}
+
+[data-theme="light"] .page-fixed-bg-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.55) 0%,
+    rgba(248, 250, 252, 0.75) 30%,
+    rgba(248, 250, 252, 0.88) 100%
+  );
+}
+
 .hero-section {
   position: relative;
   min-height: 85vh;
   display: flex;
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: transparent !important;
   color: #ffffff;
   padding: 5rem 0;
-}
-
-/* Fallback for iOS Safari touch devices where fixed attachment has viewport recalculation issues */
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 768px) {
-    .hero-section {
-      background-attachment: scroll;
-    }
-  }
+  z-index: 2;
 }
 
 .hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(9, 13, 22, 0.38) 0%,
-    rgba(9, 13, 22, 0.62) 60%,
-    rgba(9, 13, 22, 0.86) 100%
-  );
+  display: none !important;
 }
 
 .hero-content {
@@ -979,11 +999,11 @@ button, input, textarea, select {
   text-transform: uppercase;
 }
 
-/* Main content container scrolling cleanly over fixed hero background */
+/* Main content container - completely transparent so fixed background shines through */
 #app-sections {
   position: relative;
-  z-index: 5;
-  background-color: var(--bg-page);
+  z-index: 2;
+  background: transparent !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -1032,6 +1052,8 @@ button, input, textarea, select {
 /* Universal Card Base */
 .village-card {
   background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
@@ -1134,6 +1156,8 @@ button, input, textarea, select {
    -------------------------------------------------------------------------- */
 .history-narrative-box {
   background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 2.25rem;
@@ -2559,10 +2583,14 @@ textarea.form-control {
    -------------------------------------------------------------------------- */
 .site-footer {
   background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--border-color);
   padding: 4.5rem 0 2rem 0;
   color: var(--text-muted);
   font-size: 0.92rem;
+  position: relative;
+  z-index: 2;
 }
 
 .footer-top-grid {

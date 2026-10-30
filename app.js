@@ -395,10 +395,16 @@
     if (navTitle) navTitle.textContent = t(data.name);
     if (navSub) navSub.textContent = t(data.shortSub || data.subtitle);
 
-    // Hero Section
+    // Fixed Full-Page Background & Hero Section
     const heroSec = document.getElementById('hero');
-    if (heroSec && data.banner && data.banner.image) {
-      heroSec.style.backgroundImage = `url('${data.banner.image}')`;
+    const pageFixedBg = document.getElementById('page-fixed-bg');
+    if (data.banner && data.banner.image) {
+      if (pageFixedBg) {
+        pageFixedBg.style.backgroundImage = `url('${data.banner.image}')`;
+      }
+      if (heroSec) {
+        heroSec.style.backgroundImage = 'none';
+      }
     }
     const heroTitle = document.getElementById('hero-title');
     const heroTagline = document.getElementById('hero-tagline');
