@@ -19,7 +19,8 @@
 
   // Hydrate custom village data saved from Admin Panel if present in localStorage
   try {
-    const customDataRaw = localStorage.getItem('yeliyuru_custom_village_data');
+    localStorage.removeItem('yeliyuru_custom_village_data');
+    const customDataRaw = localStorage.getItem('yeliyuru_custom_village_data_v2');
     if (customDataRaw) {
       const parsedData = JSON.parse(customDataRaw);
       const defaultTime = Number((VILLAGE_DATA && VILLAGE_DATA.lastUpdated) || 0);
@@ -28,7 +29,7 @@
         VILLAGE_DATA = Object.assign({}, VILLAGE_DATA, parsedData);
         window.VILLAGE_DATA = VILLAGE_DATA;
       } else {
-        localStorage.removeItem('yeliyuru_custom_village_data');
+        localStorage.removeItem('yeliyuru_custom_village_data_v2');
       }
     }
   } catch (e) {

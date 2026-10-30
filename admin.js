@@ -11,7 +11,10 @@
 
   // 1. DATA STATE
   let currentData = null;
-  const LOCAL_STORAGE_KEY = 'yeliyuru_custom_village_data';
+  try {
+    localStorage.removeItem('yeliyuru_custom_village_data');
+  } catch (e) {}
+  const LOCAL_STORAGE_KEY = 'yeliyuru_custom_village_data_v2';
   const CLOSE_ICON_SVG = '<svg class="icon icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
   function iconSvg(name) {
@@ -1323,15 +1326,15 @@
           <div class="grid-2">
             <div class="form-group">
               <label>Official Name (English)</label>
-              <input type="text" class="form-control mem-name-en" value="${escapeHtml(nameEn)}" placeholder="e.g. Smt. Jayamma Kumar" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-name-en" value="${escapeHtml(nameEn)}" placeholder="e.g. Official Name" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>ಅಧಿಕಾರಿಯ ಹೆಸರು (ಕನ್ನಡ)</label>
-              <input type="text" class="form-control mem-name-kn" value="${escapeHtml(nameKn)}" placeholder="ಉದಾ: ಶ್ರೀಮತಿ ಜಯಮ್ಮ ಕುಮಾರ್" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-name-kn" value="${escapeHtml(nameKn)}" placeholder="ಉದಾ: ಅಧಿಕಾರಿಯ ಹೆಸರು" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>Role / Position (English)</label>
-              <input type="text" class="form-control mem-role-en" value="${escapeHtml(roleEn)}" placeholder="e.g. Panchayat President (ಅಧ್ಯಕ್ಷರು)" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-role-en" value="${escapeHtml(roleEn)}" placeholder="e.g. Panchayat President" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>ಹುದ್ದೆ / ಪದವಿ (ಕನ್ನಡ)</label>
@@ -1339,7 +1342,7 @@
             </div>
             <div class="form-group">
               <label>Direct Phone / Contact Number</label>
-              <input type="text" class="form-control mem-phone" value="${escapeHtml(phone)}" placeholder="e.g. +91 98451 22340" oninput="window.adminUpdateLeaderPreview(${idx})">
+              <input type="text" class="form-control mem-phone" value="${escapeHtml(phone)}" placeholder="e.g. +91 98765 43210" oninput="window.adminUpdateLeaderPreview(${idx})">
             </div>
             <div class="form-group">
               <label>Display Icon Badge</label>

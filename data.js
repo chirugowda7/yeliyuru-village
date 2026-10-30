@@ -116,7 +116,7 @@ const VILLAGE_DATA = {
     "satelliteImage": "",
     "elevation": ""
   },
-  "lastUpdated": 1793354565944
+  "lastUpdated": 1793355801435
 };
 
 if (typeof window !== 'undefined') {
