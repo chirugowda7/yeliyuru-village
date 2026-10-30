@@ -756,8 +756,18 @@ button, input, textarea, select {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #ffffff;
   padding: 5rem 0;
+}
+
+/* Fallback for iOS Safari touch devices where fixed attachment has viewport recalculation issues */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    .hero-section {
+      background-attachment: scroll;
+    }
+  }
 }
 
 .hero-overlay {
@@ -967,6 +977,13 @@ button, input, textarea, select {
   color: var(--text-subtle);
   display: block;
   text-transform: uppercase;
+}
+
+/* Main content container scrolling cleanly over fixed hero background */
+#app-sections {
+  position: relative;
+  z-index: 5;
+  background-color: var(--bg-page);
 }
 
 /* --------------------------------------------------------------------------
