@@ -772,8 +772,19 @@ textarea.form-control {
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-color);
-  background-color: #000;
+  border: 1px dashed var(--border-color);
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview-container::before {
+  content: 'No image';
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+  position: absolute;
+  pointer-events: none;
 }
 
 .image-preview {
@@ -781,6 +792,8 @@ textarea.form-control {
   height: 100%;
   object-fit: cover;
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .preview-badge {
@@ -821,8 +834,20 @@ textarea.form-control {
 .photo-card-img-wrap {
   position: relative;
   height: 180px;
-  background-color: #000;
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.2));
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.photo-card-img-wrap::before {
+  content: 'Photo Preview';
+  font-size: 0.8rem;
+  color: var(--text-muted, #888);
+  position: absolute;
+  pointer-events: none;
 }
 
 .photo-card-img-wrap img {
@@ -830,6 +855,8 @@ textarea.form-control {
   height: 100%;
   object-fit: cover;
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .photo-card-body {
